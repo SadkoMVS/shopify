@@ -1,0 +1,272 @@
+{% schema %}
+{
+  "name": "Custom Slider Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_heading",
+      "label": "Section Heading",
+      "default": "NO BULLSHIT INSIDE"
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "Text Position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "middle",
+          "label": "Middle"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "bottom"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "slide_image",
+          "label": "Slide Image"
+        },
+        {
+          "type": "text",
+          "id": "slide_text",
+          "label": "Slide Text",
+          "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et"
+        },
+        {
+          "type": "text",
+          "id": "menu_text",
+          "label": "Menu Text",
+          "default": "Menu Item"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Slider Section",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="custom-slider-section">
+  <h2 class="section-heading">{{ section.settings.section_heading }}</h2>
+  <div class="slider-container">
+    <div class="slider">
+      {% for block in section.blocks %}
+        <div class="slide {% if forloop.first %}selected{% endif %}" id="slide-{{ block.id }}">
+          <div class="slide-image">
+            <img src="{{ block.settings.slide_image | img_url: 'master' }}" alt="Slide Image">
+            <div class="slide-text text-position-{{ section.settings.text_position }}">
+              <p>{{ block.settings.slide_text }}</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="nav-arrows">
+      <span class="prev-arrow">
+        <img src="https://cdn.shopify.com/s/files/1/0644/9738/5622/files/prev.png?v=1716826896" alt="Previous">
+      </span>
+      <span class="next-arrow">
+        <img src="https://cdn.shopify.com/s/files/1/0644/9738/5622/files/next.png?v=1716826896" alt="Next">
+      </span>
+    </div>
+    <div class="bullets">
+      {% for block in section.blocks %}
+        <span class="bullet {% if forloop.first %}active{% endif %}" data-slide-id="slide-{{ block.id }}"></span>
+      {% endfor %}
+    </div>
+    <div class="menu">
+      {% for block in section.blocks %}
+        <p class="menu-item {% if forloop.first %}selected{% endif %}" data-slide-id="slide-{{ block.id }}">{{ block.settings.menu_text }}</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .custom-slider-section {
+    text-align: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-heading {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  .slider-container {
+    position: relative;
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+    max-width: 1200px;
+    height: 635px;
+    margin: 0 auto;
+  }
+  .slider {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    flex: 1;
+  }
+  .slide {
+    min-width: 100%;
+    box-sizing: border-box;
+    display: none;
+  }
+  .slide.selected {
+    display: flex;
+  }
+  .slide-image {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    flex: 1;
+  }
+  .slide-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .slide-text {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 10px;
+    transition: opacity 0.5s ease-in-out;
+    max-width: 70%;
+    width: 600px;
+    text-align: center;
+  }
+  .text-position-top {
+    top: 30px;
+  }
+  .text-position-middle {
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .text-position-bottom {
+    bottom: 30px;
+  }
+  .bullets {
+    position: absolute;
+    bottom: 15px;
+    left: 25%;
+    transform: translateX(-50%);
+    display: flex;
+    z-index: 10;
+  }
+  .bullet {
+    background: rgba(255, 255, 255, 0.5);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: 0 5px;
+    cursor: pointer;
+  }
+  .bullet.active {
+    background: #fff;
+  }
+  .nav-arrows {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  .nav-arrows .prev-arrow,
+  .nav-arrows .next-arrow {
+    pointer-events: all;
+    cursor: pointer;
+  }
+  .nav-arrows img {
+    width: 30px;
+    height: 30px;
+  }
+  .nav-arrows .prev-arrow {
+    margin-left: 30px; /* Desktop offset */
+  }
+  .nav-arrows .next-arrow {
+    margin-right: 30px; /* Desktop offset */
+  }
+  .menu {
+    background-color: #374151;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  .menu-item {
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 10px 0;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.7);
+    transition: color 0.3s ease;
+  }
+  .menu-item.selected {
+    color: #ffffff;
+    text-decoration: underline;
+  }
+  .menu-item:hover {
+    color: #ffffff;
+  }
+  @media (max-width: 768px) {
+    .slider-container {
+    height: auto;
+    }
+    .slide-text p{
+      margin:0;
+    }
+    .custom-slider-section {
+      flex-direction: column;
+    }
+    .slider-container {
+      flex-direction: column;
+    }
+    .nav-arrows {
+    top: 195px;
+    }
+    .bullets{
+    bottom: auto;
+    top: 355px;
+    left: 50%;
+    }
+    .nav-arrows .prev-arrow {
+      margin-left: 0;
+    }
+    .nav-arrows .next-arrow {
+      margin-right: 0;
+    }
+    .menu {
+      text-align: center;
+      align-items: center;
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+</style>
